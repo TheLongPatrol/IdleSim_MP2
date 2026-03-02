@@ -11,33 +11,49 @@ public class ResourceCounter : MonoBehaviour
 
     // counters for automatic generators
     public int num_lemon_trees = 0;
+    public int num_lemon_gardens = 0;
     public int num_apple_trees = 0;
+    public int num_apple_greenhouses = 0;
     public int num_lemonade_machines = 0;
     public int num_apple_juice_machines = 0;
+    public int num_apple_juice_factories = 0;
 
     // current cost for each generator
     public float lemon_tree_cost = 30f;
+    public float lemon_garden_cost = 60f;
     public float apple_tree_cost = 30f;
+    public float apple_greenhouse_cost = 60f;
     public float lemonade_machine_cost = 100f;
     public float apple_juice_machine_cost = 100f;
+    public float apple_juice_factory_cost = 500f;
 
     // rates per second
-    public float lemonRate = 0f;
+    public float lemonTreeRate = 0f;
     public float lemonadeMachineRate = 0f;
-    public float appleRate = 0f;
+    public float lemonGardenRate = 0f;
+    public float appleTreeRate = 0f;
+    public float appleGreenhouseRate = 0f;
     public float appleJuiceMachineRate = 0f;
+    public float appleJuiceFactoryRate = 0f;
 
     public TextMeshProUGUI lemonDisplayText;
     public TextMeshProUGUI appleDisplayText;
     public TextMeshProUGUI moneyDisplayText;
     public TextMeshProUGUI lemonTreeDisplayText;
+    public TextMeshProUGUI lemonGardenDisplayText;
     public TextMeshProUGUI lemonadeMachineDisplayText;
     public TextMeshProUGUI appleTreeDisplayText;
+    public TextMeshProUGUI appleGreenhouseDisplayText;
     public TextMeshProUGUI appleJuiceMachineDisplayText;
+    public TextMeshProUGUI appleJuiceFactoryDisplayText;
+
     public TextMeshProUGUI lemonTreeCostDisplayText;
+    public TextMeshProUGUI lemonGardenCostDisplayText;
     public TextMeshProUGUI lemonadeMachineCostDisplayText;
     public TextMeshProUGUI appleTreeCostDisplayText;
+    public TextMeshProUGUI appleGreenhouseCostDisplayText;
     public TextMeshProUGUI appleJuiceMachineCostDisplayText;
+    public TextMeshProUGUI appleJuiceFactoryCostDisplayText;
 
     public Button fertilizerButton;
     public Button lemonadeMachineButton;
@@ -51,7 +67,9 @@ public class ResourceCounter : MonoBehaviour
 
     void Update()
     {
-        float moneyRate = lemonadeMachineRate+appleJuiceMachineRate;
+        float moneyRate = lemonadeMachineRate + appleJuiceMachineRate + appleJuiceFactoryRate;
+        float lemonRate = lemonTreeRate + lemonGardenRate;
+        float appleRate = appleTreeRate + appleGreenhouseRate;
         // Euler integration
         lemons += (lemonRate * Time.deltaTime);
         apples += (appleRate * Time.deltaTime);
@@ -67,21 +85,33 @@ public class ResourceCounter : MonoBehaviour
         // update generator amounts ui
         if (lemonTreeDisplayText != null) 
             lemonTreeDisplayText.text = "Lemon Trees: " + num_lemon_trees.ToString();
+        if (lemonGardenDisplayText != null) 
+            lemonGardenDisplayText.text = "Lemon Gardens: " + num_lemon_gardens.ToString();
         if (lemonadeMachineDisplayText != null) 
             lemonadeMachineDisplayText.text = "Lemonade Machines: " +num_lemonade_machines.ToString();
         if (appleTreeDisplayText != null) 
             appleTreeDisplayText.text = "Apple Trees: " +num_apple_trees.ToString();
+        if (appleGreenhouseDisplayText != null)
+            appleGreenhouseDisplayText.text = "Apple Greenhouses: " + num_apple_greenhouses.ToString();
         if (appleJuiceMachineDisplayText != null) 
             appleJuiceMachineDisplayText.text = "Apple Juice Machines: " +num_apple_juice_machines.ToString();
+        if (appleJuiceFactoryDisplayText != null)
+            appleJuiceFactoryDisplayText.text = "Apple Juice Factories: " + num_apple_juice_factories.ToString();
         // update generator costs in ui
         if (lemonTreeCostDisplayText != null)
             lemonTreeCostDisplayText.text = "Cost: " + Mathf.FloorToInt(lemon_tree_cost).ToString() + " lemons";
+        if (lemonGardenCostDisplayText != null)
+            lemonGardenCostDisplayText.text = "Cost: " + Mathf.FloorToInt(lemon_garden_cost).ToString() + " lemons";
         if (lemonadeMachineCostDisplayText != null)
             lemonadeMachineCostDisplayText.text = "Cost: " + Mathf.FloorToInt(lemonade_machine_cost).ToString() + " lemons";
         if (appleTreeCostDisplayText != null)
             appleTreeCostDisplayText.text = "Cost: " + Mathf.FloorToInt(apple_tree_cost).ToString() +" apples";
+        if (appleGreenhouseCostDisplayText != null)
+            appleGreenhouseCostDisplayText.text = "Cost: " + Mathf.FloorToInt(apple_greenhouse_cost).ToString() +" apples";
         if (appleJuiceMachineCostDisplayText != null) 
             appleJuiceMachineCostDisplayText.text = "Cost: " + Mathf.FloorToInt(apple_juice_machine_cost).ToString() + " apples";
+        if (appleJuiceFactoryCostDisplayText != null)
+            appleJuiceFactoryCostDisplayText.text = "Cost: " + Mathf.FloorToInt(apple_juice_factory_cost).ToString() + " apples";
     }
 
     public void PickLemon()
@@ -94,9 +124,17 @@ public class ResourceCounter : MonoBehaviour
         if (lemons >= lemon_tree_cost)
         {
             lemons -= lemon_tree_cost;  // cost of lemon tree
-            lemonRate += 5f;  // increase lemon rate by 5 lemons per second
+            lemonTreeRate += 2f;  // increase lemon rate by 2 lemons per second
             num_lemon_trees+=1;
             lemon_tree_cost = Mathf.Floor(1.2f*lemon_tree_cost);
+        }
+    }
+    public void BuyLemonGarden() {
+        if (lemons >= lemon_garden_cost) {
+            lemons -= lemon_garden_cost;
+            lemonGardenRate += 5f;
+            num_lemon_gardens+=1;
+            lemon_garden_cost = Mathf.Floor(1.5f*lemon_garden_cost);
         }
     }
     public void BuyLemonadeMachine() {
@@ -118,24 +156,40 @@ public class ResourceCounter : MonoBehaviour
     public void BuyAppleTree(){
         if (apples >= apple_tree_cost) {
             apples -= apple_tree_cost;
-            appleRate += 5f;
+            appleTreeRate += 3f;
             num_apple_trees+=1;
-            apple_tree_cost = Mathf.Floor(1.5f*apple_tree_cost);
+            apple_tree_cost = Mathf.Floor(1.2f*apple_tree_cost);
+        }
+    }
+    public void BuyAppleGreenhouse() {
+        if (apples >= apple_greenhouse_cost) {
+            apples -= apple_greenhouse_cost;
+            appleGreenhouseRate += 8f;
+            num_apple_greenhouses+=1;
+            apple_greenhouse_cost = Mathf.Floor(1.5f*apple_greenhouse_cost);            
         }
     }
     public void BuyAppleJuiceMachine() {
         if (apples >= apple_juice_machine_cost) {
             apples -= apple_juice_machine_cost;
-            appleJuiceMachineRate += 50f;
+            appleJuiceMachineRate += 15f;
             num_apple_juice_machines+=1;
             apple_juice_machine_cost = Mathf.Floor(1.5f*apple_juice_machine_cost);
+        }
+    }
+    public void BuyAppleJuiceFactory() {
+        if (apples >= apple_juice_factory_cost) {
+            apples -= apple_juice_factory_cost;
+            appleJuiceFactoryRate += 50f;
+            num_apple_juice_factories+=1;
+            apple_juice_factory_cost = Mathf.Floor(1.9f*apple_juice_factory_cost);
         }
     }
     public void BuyFertilizer() {
         //Upgrade for lemon trees
         if (lemons >= 100) {
             lemons -= 100;
-            lemonRate *= 1.2f;
+            lemonTreeRate *= 1.2f;
             //disable ability to buy upgrade after 1st purchase
             if (fertilizerButton != null) fertilizerButton.interactable = false;
         }
@@ -153,7 +207,7 @@ public class ResourceCounter : MonoBehaviour
         //upgrade for apple trees
         if (apples >= 50) {
             apples -= 50;
-            appleRate *= 1.1f;
+            appleTreeRate *= 1.1f;
             if (seedsButton != null) seedsButton.interactable = false;
         }
     }
