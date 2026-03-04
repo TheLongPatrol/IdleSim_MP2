@@ -180,7 +180,7 @@ public class ResourceCounter : MonoBehaviour
     public void BuyAppleJuiceFactory() {
         if (apples >= apple_juice_factory_cost) {
             apples -= apple_juice_factory_cost;
-            appleJuiceFactoryRate += 50f;
+            appleJuiceFactoryRate += 100f;
             num_apple_juice_factories+=1;
             apple_juice_factory_cost = Mathf.Floor(1.9f*apple_juice_factory_cost);
         }
