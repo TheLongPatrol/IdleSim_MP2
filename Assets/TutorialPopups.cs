@@ -9,6 +9,10 @@ public class TutorialPopups : MonoBehaviour
     public GameObject popupPanel;
     public TMP_Text popupText;
 
+    public GameObject lemonTrophy;
+    public GameObject appleTrophy;
+    public GameObject moneyTrophy;
+
     public float popupTime = 4f;
 
     private float timer = 0f;
@@ -28,6 +32,10 @@ public class TutorialPopups : MonoBehaviour
     private bool efficientMachinesShown = false;
     private bool betterSeedsShown = false;
     private bool strongerCrushersShown = false;
+
+    private bool lemonTrophyShown = false;
+    private bool appleTrophyShown = false;
+    private bool moneyTrophyShown = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -140,6 +148,30 @@ public class TutorialPopups : MonoBehaviour
         {
             ShowPopup("Upgrade unlocked: Stronger Crushers\nBoosts Apple Juice Machine production by 20%.\nCost: 200 apples.");
             strongerCrushersShown = true;
+            return;
+        }
+
+        if (!lemonTrophyShown && rc.lemons >= 2000f)
+        {
+            ShowPopup("Achievement unlocked: Lemonaire\nAwarded for obtaining 2000 lemons!");
+            lemonTrophy.SetActive(true);
+            lemonTrophyShown = true;
+            return;
+        }
+
+        if (!appleTrophyShown && rc.apples >= 1500f)
+        {
+            ShowPopup("Achievement unlocked: Applionaire\nAwarded for obtaining 1500 apples!");
+            appleTrophy.SetActive(true);
+            appleTrophyShown = true;
+            return;
+        }
+
+        if (!moneyTrophyShown && rc.money >= 5000f)
+        {
+            ShowPopup("Achievement unlocked: Rich\nAwarded for obtaining 5000 money!");
+            moneyTrophy.SetActive(true);
+            moneyTrophyShown = true;
             return;
         }
     }
