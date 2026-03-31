@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class ResourceCounter : MonoBehaviour
 {
@@ -60,9 +61,18 @@ public class ResourceCounter : MonoBehaviour
     public Button seedsButton;
     public Button crusherButton;
 
+    public ParticleSystem lemonClickEffect;
+    public ParticleSystem leftSmokeEffect;
+    public ParticleSystem rightSmokeEffect;
+    public GameObject greenhouse;
+    public AudioClip shearsClip;
+    public GameObject garden;
+    private AudioSource shearsSource;
+    private Vector3 targetTextScale = new Vector3(1.5f, 1.5f, 1.0f);
+
     void Start()
     {
-        
+        shearsSource = garden.GetComponent<AudioSource>();
     }
 
     void Update()
@@ -117,8 +127,42 @@ public class ResourceCounter : MonoBehaviour
     public void PickLemon()
     {
         lemons += 1f;
+        lemonClickEffect.Emit(1);
     }
+    IEnumerator textMotionEase(TextMeshProUGUI displayTxtObj){
+        Vector3 scaleVel =25f*(targetTextScale - displayTxtObj.rectTransform.localScale)*Time.deltaTime;
+        float elapsed = 0f;
+        while (elapsed < 1.2f){
+            displayTxtObj.rectTransform.localScale += scaleVel*Time.deltaTime;
+            elapsed+=Time.deltaTime;
+            yield return null;
+        }
+        elapsed = 0f;
+        while (elapsed < 1.2f){
+            displayTxtObj.rectTransform.localScale -= scaleVel*Time.deltaTime;
+            elapsed+=Time.deltaTime;
+            yield return null;
+        }
+        yield break;
+    }
+    IEnumerator objectMotionEase(GameObject obj) {
+        Vector3 targetScale = new Vector3(obj.transform.localScale.x*2.0f, obj.transform.localScale.y, obj.transform.localScale.z);
+        Vector3 scaleVel =5f*(targetScale - obj.transform.localScale)*Time.deltaTime;
+        float elapsed = 0f;
+        while (elapsed < 1.2f){
+            obj.transform.localScale += scaleVel*Time.deltaTime;
+            elapsed+=Time.deltaTime;
+            yield return null;
+        }
+        // elapsed = 0f;
+        // while (elapsed < 1.2f){
+        //     obj.transform.localScale -= scaleVel*Time.deltaTime;
+        //     elapsed+=Time.deltaTime;
+        //     yield return null;
+        // }
+        yield break;
 
+    }
     public void BuyLemonTree()
     {
         if (lemons >= lemon_tree_cost)
@@ -127,6 +171,7 @@ public class ResourceCounter : MonoBehaviour
             lemonTreeRate += 2f;  // increase lemon rate by 2 lemons per second
             num_lemon_trees+=1;
             lemon_tree_cost = Mathf.Floor(1.2f*lemon_tree_cost);
+            StartCoroutine(textMotionEase(lemonTreeDisplayText));
         }
     }
     public void BuyLemonGarden() {
@@ -135,6 +180,9 @@ public class ResourceCounter : MonoBehaviour
             lemonGardenRate += 5f;
             num_lemon_gardens+=1;
             lemon_garden_cost = Mathf.Floor(1.5f*lemon_garden_cost);
+            StartCoroutine(textMotionEase(lemonGardenDisplayText));
+            shearsSource.clip = shearsClip;
+            shearsSource.PlayOneShot(shearsClip);
         }
     }
     public void BuyLemonadeMachine() {
@@ -143,6 +191,8 @@ public class ResourceCounter : MonoBehaviour
             lemonadeMachineRate +=1f;
             num_lemonade_machines+=1;
             lemonade_machine_cost = Mathf.Floor(1.5f*lemonade_machine_cost);
+            StartCoroutine(textMotionEase(lemonadeMachineDisplayText));
+            
         }
     }
     public void BuyApple()
@@ -159,6 +209,7 @@ public class ResourceCounter : MonoBehaviour
             appleTreeRate += 3f;
             num_apple_trees+=1;
             apple_tree_cost = Mathf.Floor(1.2f*apple_tree_cost);
+            StartCoroutine(textMotionEase(appleTreeDisplayText));
         }
     }
     public void BuyAppleGreenhouse() {
@@ -166,7 +217,9 @@ public class ResourceCounter : MonoBehaviour
             apples -= apple_greenhouse_cost;
             appleGreenhouseRate += 8f;
             num_apple_greenhouses+=1;
-            apple_greenhouse_cost = Mathf.Floor(1.5f*apple_greenhouse_cost);            
+            apple_greenhouse_cost = Mathf.Floor(1.5f*apple_greenhouse_cost);
+            StartCoroutine(textMotionEase(appleGreenhouseDisplayText));      
+            StartCoroutine(objectMotionEase(greenhouse));      
         }
     }
     public void BuyAppleJuiceMachine() {
@@ -175,6 +228,7 @@ public class ResourceCounter : MonoBehaviour
             appleJuiceMachineRate += 15f;
             num_apple_juice_machines+=1;
             apple_juice_machine_cost = Mathf.Floor(1.5f*apple_juice_machine_cost);
+            StartCoroutine(textMotionEase(appleJuiceMachineDisplayText));
         }
     }
     public void BuyAppleJuiceFactory() {
@@ -183,6 +237,9 @@ public class ResourceCounter : MonoBehaviour
             appleJuiceFactoryRate += 100f;
             num_apple_juice_factories+=1;
             apple_juice_factory_cost = Mathf.Floor(1.9f*apple_juice_factory_cost);
+            StartCoroutine(textMotionEase(appleJuiceFactoryDisplayText));
+            leftSmokeEffect.Emit(100);
+            rightSmokeEffect.Emit(100);
         }
     }
     public void BuyFertilizer() {
