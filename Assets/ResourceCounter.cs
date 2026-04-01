@@ -62,17 +62,29 @@ public class ResourceCounter : MonoBehaviour
     public Button crusherButton;
 
     public ParticleSystem lemonClickEffect;
+    public ParticleSystem lemonEmitter;
     public ParticleSystem leftSmokeEffect;
     public ParticleSystem rightSmokeEffect;
     public GameObject greenhouse;
     public AudioClip shearsClip;
+    public GameObject blender;
+    public AudioClip blenderClip;
     public GameObject garden;
+
+
     private AudioSource shearsSource;
+    private AudioSource blenderSource;
     private Vector3 targetTextScale = new Vector3(1.5f, 1.5f, 1.0f);
+    private Color lemon_color;
+    private Color apple_color;
 
     void Start()
     {
         shearsSource = garden.GetComponent<AudioSource>();
+        blenderSource = blender.GetComponent<AudioSource>();
+        lemon_color = Color.yellow;
+        apple_color = Color.red;
+        StartCoroutine(resourceEmission(lemonEmitter, "lemon"));
     }
 
     void Update()
@@ -85,6 +97,7 @@ public class ResourceCounter : MonoBehaviour
         apples += (appleRate * Time.deltaTime);
         money += (moneyRate *Time.deltaTime);
 
+        
         // update the UI
         if (lemonDisplayText != null)
             lemonDisplayText.text = "Lemons: " + Mathf.FloorToInt(lemons).ToString();
@@ -128,7 +141,36 @@ public class ResourceCounter : MonoBehaviour
     {
         lemons += 1f;
         lemonClickEffect.Emit(1);
+        lemonEmitter.Emit(1);
     }
+
+    IEnumerator resourceEmission(ParticleSystem emitter, string resource) {
+        if (resource == "lemon") {
+            while (true) {
+                lemonEmitter.Emit(Mathf.FloorToInt(lemonTreeRate + lemonGardenRate));
+                yield return new WaitForSeconds(1);
+            }
+        }
+    }
+
+    IEnumerator textColorAnimation(TextMeshProUGUI costTxtObj, Color color) {
+        Color orig_color = new Color(costTxtObj.color.r,costTxtObj.color.b,costTxtObj.color.g,costTxtObj.color.a);
+        float elapsed = 0f;
+        float interpolation_ratio = 0.2f;
+        while (elapsed < 1.2f) {
+            costTxtObj.color = Color.Lerp(costTxtObj.color,color, interpolation_ratio);
+            elapsed+=Time.deltaTime;
+            yield return null;
+        }
+        elapsed = 0f;
+        while (elapsed < 1.2f) {
+            costTxtObj.color = Color.Lerp(costTxtObj.color, orig_color, interpolation_ratio);
+            elapsed+=Time.deltaTime;
+            yield return null;
+        }
+        yield break;
+    }
+
     IEnumerator textMotionEase(TextMeshProUGUI displayTxtObj){
         Vector3 scaleVel =25f*(targetTextScale - displayTxtObj.rectTransform.localScale)*Time.deltaTime;
         float elapsed = 0f;
@@ -147,7 +189,7 @@ public class ResourceCounter : MonoBehaviour
     }
     IEnumerator objectMotionEase(GameObject obj) {
         Vector3 targetScale = new Vector3(obj.transform.localScale.x*2.0f, obj.transform.localScale.y, obj.transform.localScale.z);
-        Vector3 scaleVel =5f*(targetScale - obj.transform.localScale)*Time.deltaTime;
+        Vector3 scaleVel =3f*(targetScale - obj.transform.localScale)*Time.deltaTime;
         float elapsed = 0f;
         while (elapsed < 1.2f){
             obj.transform.localScale += scaleVel*Time.deltaTime;
@@ -172,6 +214,7 @@ public class ResourceCounter : MonoBehaviour
             num_lemon_trees+=1;
             lemon_tree_cost = Mathf.Floor(1.2f*lemon_tree_cost);
             StartCoroutine(textMotionEase(lemonTreeDisplayText));
+            StartCoroutine(textColorAnimation(lemonTreeCostDisplayText, lemon_color));
         }
     }
     public void BuyLemonGarden() {
@@ -181,6 +224,7 @@ public class ResourceCounter : MonoBehaviour
             num_lemon_gardens+=1;
             lemon_garden_cost = Mathf.Floor(1.5f*lemon_garden_cost);
             StartCoroutine(textMotionEase(lemonGardenDisplayText));
+            StartCoroutine(textColorAnimation(lemonGardenCostDisplayText, lemon_color));
             shearsSource.clip = shearsClip;
             shearsSource.PlayOneShot(shearsClip);
         }
@@ -192,6 +236,7 @@ public class ResourceCounter : MonoBehaviour
             num_lemonade_machines+=1;
             lemonade_machine_cost = Mathf.Floor(1.5f*lemonade_machine_cost);
             StartCoroutine(textMotionEase(lemonadeMachineDisplayText));
+            StartCoroutine(textColorAnimation(lemonadeMachineCostDisplayText, lemon_color));
             
         }
     }
@@ -210,6 +255,7 @@ public class ResourceCounter : MonoBehaviour
             num_apple_trees+=1;
             apple_tree_cost = Mathf.Floor(1.2f*apple_tree_cost);
             StartCoroutine(textMotionEase(appleTreeDisplayText));
+            StartCoroutine(textColorAnimation(appleTreeCostDisplayText, apple_color));
         }
     }
     public void BuyAppleGreenhouse() {
@@ -219,7 +265,8 @@ public class ResourceCounter : MonoBehaviour
             num_apple_greenhouses+=1;
             apple_greenhouse_cost = Mathf.Floor(1.5f*apple_greenhouse_cost);
             StartCoroutine(textMotionEase(appleGreenhouseDisplayText));      
-            StartCoroutine(objectMotionEase(greenhouse));      
+            StartCoroutine(objectMotionEase(greenhouse));
+            StartCoroutine(textColorAnimation(appleGreenhouseCostDisplayText, apple_color));
         }
     }
     public void BuyAppleJuiceMachine() {
@@ -229,6 +276,9 @@ public class ResourceCounter : MonoBehaviour
             num_apple_juice_machines+=1;
             apple_juice_machine_cost = Mathf.Floor(1.5f*apple_juice_machine_cost);
             StartCoroutine(textMotionEase(appleJuiceMachineDisplayText));
+            StartCoroutine(textColorAnimation(appleJuiceMachineCostDisplayText, apple_color));
+            blenderSource.clip = blenderClip;
+            blenderSource.PlayOneShot(blenderClip);
         }
     }
     public void BuyAppleJuiceFactory() {
@@ -238,6 +288,7 @@ public class ResourceCounter : MonoBehaviour
             num_apple_juice_factories+=1;
             apple_juice_factory_cost = Mathf.Floor(1.9f*apple_juice_factory_cost);
             StartCoroutine(textMotionEase(appleJuiceFactoryDisplayText));
+            StartCoroutine(textColorAnimation(appleJuiceFactoryCostDisplayText, apple_color));
             leftSmokeEffect.Emit(100);
             rightSmokeEffect.Emit(100);
         }
