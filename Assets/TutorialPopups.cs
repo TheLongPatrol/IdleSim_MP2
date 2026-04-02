@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class TutorialPopups : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class TutorialPopups : MonoBehaviour
     public GameObject moneyTrophy;
 
     public float popupTime = 4f;
+    private Vector3 originalScale;
 
     private float timer = 0f;
     private bool showing = false;
@@ -45,7 +47,9 @@ public class TutorialPopups : MonoBehaviour
     {
         if (popupPanel != null)
         {
+            originalScale = popupPanel.transform.localScale; 
             popupPanel.SetActive(false);
+            popupPanel.transform.localScale = Vector3.zero;
         }
 
         ShowPopup("Grab some lemons.\nCollect lemons to unlock new items.");
@@ -181,32 +185,84 @@ public class TutorialPopups : MonoBehaviour
 
 void ShowPopup(string msg)
     {
-        if (popupPanel != null)
+        /*if (popupPanel != null)
         {
             popupPanel.SetActive(true);
-        }
+        }*/
 
         if (popupText != null)
         {
             popupText.text = msg;
         }
 
-        if(unlockSoundSource != null && unlockSoundClip != null)
-        {
-            unlockSoundSource.PlayOneShot(unlockSoundClip);
-        }
-
         showing = true;
         timer = popupTime;
+
+        StopAllCoroutines(); // Prevents animations from fighting each other
+        StartCoroutine(AnimateIn());
+
+        /*if(unlockSoundSource != null && unlockSoundClip != null)
+        {
+            unlockSoundSource.PlayOneShot(unlockSoundClip);
+        }*/
     }
 
     void HidePopup()
     {
-        if (popupPanel != null)
+        /*if (popupPanel != null)
         {
             popupPanel.SetActive(false);
         }
 
+        showing = false;*/
+
+        StartCoroutine(AnimateOut());
+    }
+
+    IEnumerator AnimateIn()
+    {
+        popupPanel.SetActive(true);
+        float t = 0;
+        float duration = 0.6f;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float percent = t / duration;
+
+            float s;
+            if (percent < 0.7f)
+            {
+                s = Mathf.Lerp(0f, 1.4f, percent / 0.7f);
+            }
+            else
+            {
+                // go from 1.1 back down to 1.0
+                s = Mathf.Lerp(1.4f, 1.0f, (percent - 0.7f) / 0.3f);
+            }
+
+            popupPanel.transform.localScale = originalScale * s;
+            yield return null;
+        }
+
+        // ensure it ends at exactly the right size
+        popupPanel.transform.localScale = originalScale;
+    }
+
+    IEnumerator AnimateOut()
+    {
+        float t = 0;
+        float duration = 0.3f;
+        Vector3 startScale = popupPanel.transform.localScale;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            popupPanel.transform.localScale = Vector3.Lerp(startScale, Vector3.zero, t / duration);
+            yield return null;
+        }
+
+        popupPanel.SetActive(false);
         showing = false;
     }
 }

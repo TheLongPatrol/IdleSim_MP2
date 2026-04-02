@@ -62,7 +62,9 @@ public class ResourceCounter : MonoBehaviour
     public Button crusherButton;
 
     public ParticleSystem lemonClickEffect;
+    public ParticleSystem appleClickEffect;
     public ParticleSystem lemonEmitter;
+    public ParticleSystem appleEmitter;
     public ParticleSystem leftSmokeEffect;
     public ParticleSystem rightSmokeEffect;
     public GameObject greenhouse;
@@ -90,6 +92,7 @@ public class ResourceCounter : MonoBehaviour
         lemon_color = Color.yellow;
         apple_color = Color.red;
         StartCoroutine(resourceEmission(lemonEmitter, "lemon"));
+        StartCoroutine(resourceEmission(appleEmitter, "apple"));
     }
 
     void Update()
@@ -153,6 +156,13 @@ public class ResourceCounter : MonoBehaviour
         if (resource == "lemon") {
             while (true) {
                 lemonEmitter.Emit(Mathf.FloorToInt(lemonTreeRate + lemonGardenRate));
+                yield return new WaitForSeconds(1);
+            }
+        }
+        
+        if (resource == "apple") {
+            while (true) {
+                appleEmitter.Emit(Mathf.FloorToInt(appleTreeRate + appleGreenhouseRate));
                 yield return new WaitForSeconds(1);
             }
         }
@@ -266,6 +276,8 @@ public class ResourceCounter : MonoBehaviour
             money -= 1f;
             apples += 1f;
         }
+
+        appleEmitter.Emit(1);
 
         if(appleBuySource != null && appleBuyClip != null)
         {
