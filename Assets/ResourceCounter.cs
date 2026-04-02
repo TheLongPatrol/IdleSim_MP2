@@ -56,6 +56,11 @@ public class ResourceCounter : MonoBehaviour
     public TextMeshProUGUI appleJuiceMachineCostDisplayText;
     public TextMeshProUGUI appleJuiceFactoryCostDisplayText;
 
+    public TextMeshProUGUI fertilizerText;
+    public TextMeshProUGUI lemonadeUpgradeText;
+    public TextMeshProUGUI seedsText;
+    public TextMeshProUGUI crusherText;
+
     public Button fertilizerButton;
     public Button lemonadeMachineButton;
     public Button seedsButton;
@@ -72,23 +77,50 @@ public class ResourceCounter : MonoBehaviour
     public GameObject blender;
     public AudioClip blenderClip;
     public GameObject garden;
+    public GameObject lemonTree;
+    public GameObject appleTree;
+    public GameObject lemonadeMachine;
+    public GameObject appleFactory;
 
     public AudioSource appleBuySource;
     public AudioClip appleBuyClip;
-
+    public AudioClip generatorClip;
+    public AudioClip powerupClip;
+    public AudioClip unlockAppleClip;
 
     private AudioSource shearsSource;
     private AudioSource blenderSource;
+    private AudioSource lemonTreeSource;
+    private AudioSource lemonadeMachineSource;
+    private AudioSource appleTreeSource;
+    private AudioSource appleGreenhouseSource;
+    private AudioSource appleFactorySource;
+    private AudioSource lemonTreePowerupSource;
+    private AudioSource lemonadeMachinePowerupSource;
+    private AudioSource appleTreePowerupSource;
+    private AudioSource appleJuicePowerupSource;
+    
+
+
     private Vector3 targetTextScale = new Vector3(1.5f, 1.5f, 1.0f);
     private Color lemon_color;
     private Color apple_color;
-
+    private bool bought_first_apple = false;
     public HapticManager hapticManager;
     
     void Start()
     {
         shearsSource = garden.GetComponent<AudioSource>();
         blenderSource = blender.GetComponent<AudioSource>();
+        lemonTreeSource = lemonTree.GetComponent<AudioSource>();
+        lemonadeMachineSource = lemonadeMachine.GetComponent<AudioSource>();
+        appleTreeSource = appleTree.GetComponent<AudioSource>();
+        appleGreenhouseSource = greenhouse.GetComponent<AudioSource>();
+        appleFactorySource = appleFactory.GetComponent<AudioSource>();
+        lemonTreePowerupSource = fertilizerText.GetComponent<AudioSource>();
+        lemonadeMachinePowerupSource = lemonadeUpgradeText.GetComponent<AudioSource>();
+        appleTreePowerupSource = seedsText.GetComponent<AudioSource>();
+        appleJuicePowerupSource = crusherText.GetComponent<AudioSource>();
         lemon_color = Color.yellow;
         apple_color = Color.red;
         StartCoroutine(resourceEmission(lemonEmitter, "lemon"));
@@ -105,7 +137,10 @@ public class ResourceCounter : MonoBehaviour
         apples += (appleRate * Time.deltaTime);
         money += (moneyRate *Time.deltaTime);
 
-        
+        if (!bought_first_apple && apples > 0) {
+            appleBuySource.PlayOneShot(unlockAppleClip);
+            bought_first_apple = false;
+        }
         // update the UI
         if (lemonDisplayText != null)
             lemonDisplayText.text = "Lemons: " + Mathf.FloorToInt(lemons).ToString();
@@ -246,6 +281,7 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textMotionEase(lemonGardenDisplayText));
             StartCoroutine(textColorAnimation(lemonGardenCostDisplayText, lemon_color));
             shearsSource.clip = shearsClip;
+            shearsSource.PlayOneShot(generatorClip);
             shearsSource.PlayOneShot(shearsClip);
 
             if (hapticManager != null)
@@ -262,7 +298,7 @@ public class ResourceCounter : MonoBehaviour
             lemonade_machine_cost = Mathf.Floor(1.5f*lemonade_machine_cost);
             StartCoroutine(textMotionEase(lemonadeMachineDisplayText));
             StartCoroutine(textColorAnimation(lemonadeMachineCostDisplayText, lemon_color));
-            
+            lemonadeMachineSource.PlayOneShot(generatorClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayGeneratorHaptic();
@@ -297,7 +333,7 @@ public class ResourceCounter : MonoBehaviour
             apple_tree_cost = Mathf.Floor(1.2f*apple_tree_cost);
             StartCoroutine(textMotionEase(appleTreeDisplayText));
             StartCoroutine(textColorAnimation(appleTreeCostDisplayText, apple_color));
-
+            appleTreeSource.PlayOneShot(generatorClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayGeneratorHaptic();
@@ -313,7 +349,7 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textMotionEase(appleGreenhouseDisplayText));      
             StartCoroutine(objectMotionEase(greenhouse));
             StartCoroutine(textColorAnimation(appleGreenhouseCostDisplayText, apple_color));
-
+            appleGreenhouseSource.PlayOneShot(generatorClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayGeneratorHaptic();
@@ -329,8 +365,8 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textMotionEase(appleJuiceMachineDisplayText));
             StartCoroutine(textColorAnimation(appleJuiceMachineCostDisplayText, apple_color));
             blenderSource.clip = blenderClip;
+            blenderSource.PlayOneShot(generatorClip);
             blenderSource.PlayOneShot(blenderClip);
-
             if (hapticManager != null)
             {
                 hapticManager.PlayGeneratorHaptic();
@@ -347,7 +383,8 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textColorAnimation(appleJuiceFactoryCostDisplayText, apple_color));
             leftSmokeEffect.Emit(100);
             rightSmokeEffect.Emit(100);
-
+            
+            appleFactorySource.PlayOneShot(generatorClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayGeneratorHaptic();
@@ -361,7 +398,7 @@ public class ResourceCounter : MonoBehaviour
             lemonTreeRate *= 1.2f;
             //disable ability to buy upgrade after 1st purchase
             if (fertilizerButton != null) fertilizerButton.interactable = false;
-
+            appleTreePowerupSource.PlayOneShot(powerupClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayPowerupHaptic();
@@ -374,7 +411,7 @@ public class ResourceCounter : MonoBehaviour
             lemons -= 200;
             lemonadeMachineRate *= 1.15f;
             if (lemonadeMachineButton != null) lemonadeMachineButton.interactable = false;
-
+            lemonadeMachinePowerupSource.PlayOneShot(powerupClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayPowerupHaptic();
@@ -388,7 +425,7 @@ public class ResourceCounter : MonoBehaviour
             apples -= 50;
             appleTreeRate *= 1.1f;
             if (seedsButton != null) seedsButton.interactable = false;
-
+            appleTreePowerupSource.PlayOneShot(powerupClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayPowerupHaptic();
@@ -401,7 +438,7 @@ public class ResourceCounter : MonoBehaviour
             apples -= 200;
             appleJuiceMachineRate *= 1.2f;
             if (crusherButton != null) crusherButton.interactable = false;
-
+            appleJuicePowerupSource.PlayOneShot(powerupClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayPowerupHaptic();
