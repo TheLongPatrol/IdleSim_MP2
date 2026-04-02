@@ -36,6 +36,9 @@ public class TutorialPopups : MonoBehaviour
     private bool lemonTrophyShown = false;
     private bool appleTrophyShown = false;
     private bool moneyTrophyShown = false;
+    
+    public AudioSource unlockSoundSource;
+    public AudioClip unlockSoundClip;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -186,6 +189,11 @@ void ShowPopup(string msg)
         if (popupText != null)
         {
             popupText.text = msg;
+        }
+
+        if(unlockSoundSource != null && unlockSoundClip != null)
+        {
+            unlockSoundSource.PlayOneShot(unlockSoundClip);
         }
 
         showing = true;

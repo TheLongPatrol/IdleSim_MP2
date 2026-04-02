@@ -71,6 +71,9 @@ public class ResourceCounter : MonoBehaviour
     public AudioClip blenderClip;
     public GameObject garden;
 
+    public AudioSource appleBuySource;
+    public AudioClip appleBuyClip;
+
 
     private AudioSource shearsSource;
     private AudioSource blenderSource;
@@ -78,6 +81,8 @@ public class ResourceCounter : MonoBehaviour
     private Color lemon_color;
     private Color apple_color;
 
+    public HapticManager hapticManager;
+    
     void Start()
     {
         shearsSource = garden.GetComponent<AudioSource>();
@@ -215,6 +220,11 @@ public class ResourceCounter : MonoBehaviour
             lemon_tree_cost = Mathf.Floor(1.2f*lemon_tree_cost);
             StartCoroutine(textMotionEase(lemonTreeDisplayText));
             StartCoroutine(textColorAnimation(lemonTreeCostDisplayText, lemon_color));
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayGeneratorHaptic();
+            }
         }
     }
     public void BuyLemonGarden() {
@@ -227,6 +237,11 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textColorAnimation(lemonGardenCostDisplayText, lemon_color));
             shearsSource.clip = shearsClip;
             shearsSource.PlayOneShot(shearsClip);
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayGeneratorHaptic();
+            }
         }
     }
     public void BuyLemonadeMachine() {
@@ -238,6 +253,10 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textMotionEase(lemonadeMachineDisplayText));
             StartCoroutine(textColorAnimation(lemonadeMachineCostDisplayText, lemon_color));
             
+            if (hapticManager != null)
+            {
+                hapticManager.PlayGeneratorHaptic();
+            }
         }
     }
     public void BuyApple()
@@ -246,6 +265,11 @@ public class ResourceCounter : MonoBehaviour
         {
             money -= 1f;
             apples += 1f;
+        }
+
+        if(appleBuySource != null && appleBuyClip != null)
+        {
+            appleBuySource.PlayOneShot(appleBuyClip);
         }
     }
     public void BuyAppleTree(){
@@ -256,6 +280,11 @@ public class ResourceCounter : MonoBehaviour
             apple_tree_cost = Mathf.Floor(1.2f*apple_tree_cost);
             StartCoroutine(textMotionEase(appleTreeDisplayText));
             StartCoroutine(textColorAnimation(appleTreeCostDisplayText, apple_color));
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayGeneratorHaptic();
+            }
         }
     }
     public void BuyAppleGreenhouse() {
@@ -267,6 +296,11 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textMotionEase(appleGreenhouseDisplayText));      
             StartCoroutine(objectMotionEase(greenhouse));
             StartCoroutine(textColorAnimation(appleGreenhouseCostDisplayText, apple_color));
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayGeneratorHaptic();
+            }
         }
     }
     public void BuyAppleJuiceMachine() {
@@ -279,6 +313,11 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textColorAnimation(appleJuiceMachineCostDisplayText, apple_color));
             blenderSource.clip = blenderClip;
             blenderSource.PlayOneShot(blenderClip);
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayGeneratorHaptic();
+            }
         }
     }
     public void BuyAppleJuiceFactory() {
@@ -291,6 +330,11 @@ public class ResourceCounter : MonoBehaviour
             StartCoroutine(textColorAnimation(appleJuiceFactoryCostDisplayText, apple_color));
             leftSmokeEffect.Emit(100);
             rightSmokeEffect.Emit(100);
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayGeneratorHaptic();
+            }
         }
     }
     public void BuyFertilizer() {
@@ -300,6 +344,11 @@ public class ResourceCounter : MonoBehaviour
             lemonTreeRate *= 1.2f;
             //disable ability to buy upgrade after 1st purchase
             if (fertilizerButton != null) fertilizerButton.interactable = false;
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayPowerupHaptic();
+            }
         }
     }
     public void BuyEfficientLemonadeMachines() {
@@ -308,6 +357,11 @@ public class ResourceCounter : MonoBehaviour
             lemons -= 200;
             lemonadeMachineRate *= 1.15f;
             if (lemonadeMachineButton != null) lemonadeMachineButton.interactable = false;
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayPowerupHaptic();
+            }
         }
         
     }
@@ -317,6 +371,11 @@ public class ResourceCounter : MonoBehaviour
             apples -= 50;
             appleTreeRate *= 1.1f;
             if (seedsButton != null) seedsButton.interactable = false;
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayPowerupHaptic();
+            }
         }
     }
     public void BuyStrongerCrushers() {
@@ -325,6 +384,11 @@ public class ResourceCounter : MonoBehaviour
             apples -= 200;
             appleJuiceMachineRate *= 1.2f;
             if (crusherButton != null) crusherButton.interactable = false;
+
+            if (hapticManager != null)
+            {
+                hapticManager.PlayPowerupHaptic();
+            }
         }
     }
 }
