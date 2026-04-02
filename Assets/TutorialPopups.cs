@@ -41,6 +41,7 @@ public class TutorialPopups : MonoBehaviour
     
     public AudioSource unlockSoundSource;
     public AudioClip unlockSoundClip;
+    public AudioClip unlockAppleClip;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -97,6 +98,7 @@ public class TutorialPopups : MonoBehaviour
 
         if (!applesUnlockedShown && rc.money >= 1f)
         {
+            unlockSoundSource.PlayOneShot(unlockAppleClip);
             ShowPopup("Grab some apples.\nUse money to buy apples and unlock new items.");
             applesUnlockedShown = true;
             return;
@@ -201,10 +203,10 @@ void ShowPopup(string msg)
         StopAllCoroutines(); // Prevents animations from fighting each other
         StartCoroutine(AnimateIn());
 
-        /*if(unlockSoundSource != null && unlockSoundClip != null)
+        if(unlockSoundSource != null && unlockSoundClip != null)
         {
             unlockSoundSource.PlayOneShot(unlockSoundClip);
-        }*/
+        }
     }
 
     void HidePopup()

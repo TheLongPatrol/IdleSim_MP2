@@ -139,7 +139,7 @@ public class ResourceCounter : MonoBehaviour
 
         if (!bought_first_apple && apples > 0) {
             appleBuySource.PlayOneShot(unlockAppleClip);
-            bought_first_apple = false;
+            bought_first_apple = true;
         }
         // update the UI
         if (lemonDisplayText != null)
@@ -265,7 +265,7 @@ public class ResourceCounter : MonoBehaviour
             lemon_tree_cost = Mathf.Floor(1.2f*lemon_tree_cost);
             StartCoroutine(textMotionEase(lemonTreeDisplayText));
             StartCoroutine(textColorAnimation(lemonTreeCostDisplayText, lemon_color));
-
+            lemonTreeSource.PlayOneShot(generatorClip);
             if (hapticManager != null)
             {
                 hapticManager.PlayGeneratorHaptic();

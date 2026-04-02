@@ -6431,7 +6431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3204cd9e2773c4f0a8ce5de9bae23232, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceCounter
-  lemons: 1950
+  lemons: 0
   apples: 0
   money: 0
   num_lemon_trees: 0
@@ -6537,6 +6537,7 @@ MonoBehaviour:
   popupTime: 5
   unlockSoundSource: {fileID: 207147545}
   unlockSoundClip: {fileID: 8300000, guid: 6cfd64f36f55741bbb7df436fddc9611, type: 3}
+  unlockAppleClip: {fileID: 8300000, guid: 1e1097931331fb442b230e4debd3a7cd, type: 3}
 --- !u!114 &207147544
 MonoBehaviour:
   m_ObjectHideFlags: 0
