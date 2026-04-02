@@ -23,4 +23,13 @@ public class HapticManager : MonoBehaviour
         if (rightHaptic != null)
             rightHaptic.SendHapticImpulse(0.75f, 0.06f);
     }
+
+    public void PlayAppleHaptic()
+    {
+        if (leftHaptic != null)
+            leftHaptic.SendHapticImpulse(0.55f, 0.20f);
+
+        if (rightHaptic != null)
+            rightHaptic.SendHapticImpulse(0.55f, 0.20f);
+    }
 }

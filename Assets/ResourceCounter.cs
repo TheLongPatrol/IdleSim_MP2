@@ -283,6 +283,11 @@ public class ResourceCounter : MonoBehaviour
         {
             appleBuySource.PlayOneShot(appleBuyClip);
         }
+
+        if (hapticManager != null)
+        {
+                hapticManager.PlayAppleHaptic();
+        }
     }
     public void BuyAppleTree(){
         if (apples >= apple_tree_cost) {
